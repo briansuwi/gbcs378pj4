@@ -316,11 +316,16 @@ class Integer {
         // -----
 
 		bool valid () const {
-			typename C::iterator it;
+			
+			for (unsigned int i = 0; i < digits.size(); i++) {
+				if (digits[i] > 9 || digits[i] < 0)
+					return false;
+			}
+			/*
 			for( it = digits.begin(); it < digits.end(); it++ )
 				if( (*it) > 9 || (*it) < 0 )
 					return false;
-			
+			*/
 			return true;}
 
     public:
@@ -359,9 +364,12 @@ class Integer {
 			else
 				polarity = true;
 			
-			for( std::string::reverse_iterator it = v.rbegin(); it != v.rend(); it++ )
-// 				std::cout << "DEBUG " << *it - '0' << std::endl;
-				digits.push_back( (*it)-'0' );
+			
+			std::string::reverse_iterator s_it = v.rbegin();
+			while (s_it != v.rend()) {
+				digits.push_back( (*s_it)-'0' );
+				s_it++;
+			}
 			
             if (!valid())
                 throw std::invalid_argument("Integer::Integer()");}

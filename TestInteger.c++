@@ -117,7 +117,7 @@ struct TestInteger : CppUnit::TestFixture {
             const Integer<int> x("abc");
             CPPUNIT_ASSERT(false);}
         catch (std::invalid_argument& e) {
-            CPPUNIT_ASSERT(strcmp(e.what(), "Integer::Integer()"));}}
+			CPPUNIT_ASSERT(strcmp(e.what(), "Integer::Integer()") == 0);}}
 
     void test_constructor_2 () {
         try {
