@@ -117,7 +117,6 @@ struct TestInteger : CppUnit::TestFixture {
             const Integer<int> x("abc");
             CPPUNIT_ASSERT(false);}
         catch (std::invalid_argument& e) {
-			std::cout << e.what();
 			CPPUNIT_ASSERT(strcmp(e.what(), "Integer::Integer()") == 0);}}
 
     void test_constructor_2 () {
@@ -221,6 +220,144 @@ struct TestInteger : CppUnit::TestFixture {
             CPPUNIT_ASSERT(y ==     0);}
         catch (std::invalid_argument& e) {
             CPPUNIT_ASSERT(false);}}
+			
+    // ---
+    // +=
+    // ---
+
+	void test_plus_equal_1 () {
+		try {
+			Integer<int>       x = 98765;
+			Integer<int>      y = 1;
+			x += y;
+			CPPUNIT_ASSERT( x == 98766);}
+		catch (std::invalid_argument& e) {
+			CPPUNIT_ASSERT(false);}
+	}
+	
+	void test_plus_equal_1 () {
+		try {
+			Integer<int>       x = 98765;
+			Integer<int>      y = 1;
+			x += y;
+			CPPUNIT_ASSERT( x == 98766);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
+	
+	void test_plus_equal_2 () {
+		try {
+			Integer<int>       x = 98765;
+			Integer<int>      y = 1;
+			y += x;
+			CPPUNIT_ASSERT( y == 98766);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
+	
+	void test_plus_equal_3 () {
+		try {
+			Integer<int>       x = 98765;
+			Integer<int>      y = -1;
+			x += y;
+			CPPUNIT_ASSERT( x == 98764);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
+	
+	void test_plus_equal_4 () {
+		try {
+			Integer<int>       x = -98765;
+			Integer<int>      y = 1;
+			y += x;
+			CPPUNIT_ASSERT( y == -98764);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
+	
+	void test_plus_equal_5 () {
+		try {
+			Integer<int>       x = -98765;
+			Integer<int>      y = -1;
+			x += y;
+			CPPUNIT_ASSERT( x == -98766);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
+	
+	void test_plus_equal_6 () {
+		try {
+			Integer<int>       x = -98765;
+			Integer<int>      y = -1;
+			y += x;
+			CPPUNIT_ASSERT( y == -98766);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
+
+    // ---
+    // -=
+    // ---
+
+	void test_minus_equal_1 () {
+		try {
+			Integer<int>       x = 98765;
+			Integer<int>      y = 1;
+			x -= y;
+			CPPUNIT_ASSERT( x == 98764);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
+	
+	void test_minus_equal_2 () {
+		try {
+			Integer<int>       x = 98765;
+			Integer<int>      y = 1;
+			y -= x;
+			CPPUNIT_ASSERT( y == -98764);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
+	
+	void test_minus_equal_3 () {
+		try {
+			Integer<int>       x = 98765;
+			Integer<int>      y = -1;
+			x -= y;
+			CPPUNIT_ASSERT( x == 98766);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
+	
+	void test_minus_equal_4 () {
+		try {
+			Integer<int>       x = 98765;
+			Integer<int>      y = -1;
+			y -= x;
+			CPPUNIT_ASSERT( y == -98766);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
+	
+	void test_minus_equal_5 () {
+		try {
+			Integer<int>       x = -98765;
+			Integer<int>      y = -1;
+			x -= y;
+			CPPUNIT_ASSERT( x == -98764);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
+	
+	void test_minus_equal_6 () {
+		try {
+			Integer<int>       x = -98765;
+			Integer<int>      y = -1;
+			y -= x;
+			CPPUNIT_ASSERT( y == 98764);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
 
     // -----
     // suite
@@ -242,7 +379,19 @@ struct TestInteger : CppUnit::TestFixture {
     CPPUNIT_TEST(test_output);
     CPPUNIT_TEST(test_pow_1);
     CPPUNIT_TEST(test_pow_2);
-    CPPUNIT_TEST_SUITE_END();};
+	CPPUNIT_TEST(test_plus_equal_1);
+	CPPUNIT_TEST(test_plus_equal_2);
+	CPPUNIT_TEST(test_plus_equal_3);
+	CPPUNIT_TEST(test_plus_equal_4);
+	CPPUNIT_TEST(test_plus_equal_5);
+	CPPUNIT_TEST(test_plus_equal_6);
+	CPPUNIT_TEST(test_minus_equal_1);
+	CPPUNIT_TEST(test_minus_equal_2);
+	CPPUNIT_TEST(test_minus_equal_3);
+	CPPUNIT_TEST(test_minus_equal_4);
+	CPPUNIT_TEST(test_minus_equal_5);
+	CPPUNIT_TEST(test_minus_equal_6);
+	CPPUNIT_TEST_SUITE_END();};
 
 // ----
 // main

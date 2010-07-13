@@ -145,19 +145,34 @@ class Integer {
         // -----------
 
         /**
-         * <your documentation>
-         */
+		* @param lhs the left hand operand
+		* @param rhs the right hand operand
+		* @return true if lhs is equal to rhs, false otherwise
+		 */
         friend bool operator == (const Integer& lhs, const Integer& rhs) {
-            // <your code>
-            return false;}
+			if (lhs.polarity != rhs.polarity)
+				return false;
+						
+			if (lhs.digits.size() != rhs.digits.size()) {
+				return false;
+			} else {
+				for (unsigned int i = 0; i < lhs.digits.size(); i++) {
+					if(lhs.digits[i] != rhs.digits[i]){
+						return false;
+					}
+				}
+			}
+            return true;}
 
         // -----------
         // operator !=
         // -----------
 
         /**
-         * <your documentation>
-         */
+		 * @param lhs the left hand operand
+		 * @param rhs the right hand operand
+		 * @return true if lhs is not equal to rhs, false otherwise
+		 */
         friend bool operator != (const Integer& lhs, const Integer& rhs) {
             return !(lhs == rhs);}
 
@@ -166,19 +181,46 @@ class Integer {
         // ----------
 
         /**
-         * <your documentation>
+         * @param lhs the left hand operand
+		 * @param rhs the right hand operand
+		 * @return true if lhs is less than rhs, false otherwise
          */
         friend bool operator < (const Integer& lhs, const Integer& rhs) {
-            // <your code>
-            return false;}
+			if( !lhs.polarity && !rhs.polarity )
+				return -lhs > -rhs;
+			
+			if (!lhs.polarity && rhs.polarity)
+				return true;
+			if (lhs.polarity && !rhs.polarity)
+				return false;		
+			
+			if (lhs.digits.size() < rhs.digits.size()) 
+				return true;
+			if (lhs.digits.size() > rhs.digits.size()) 
+				return false;	
+				
+			
+			for (unsigned int i = lhs.digits.size()-1; i >= 0; i--) {
+				if(lhs.digits[i] > rhs.digits[i])
+					return false;
+				
+				if(lhs.digits[i] < rhs.digits[i])
+					return true;
+			}
+			
+			return false;
+			
+        }
 
         // -----------
         // operator <=
         // -----------
 
         /**
-         * <your documentation>
-         */
+		 * @param lhs the left hand operand
+		 * @param rhs the right hand operand
+		 * @return true if lhs is less than or equal to rhs, false otherwise
+		 */
         friend bool operator <= (const Integer& lhs, const Integer& rhs) {
             return !(rhs < lhs);}
 
@@ -187,8 +229,10 @@ class Integer {
         // ----------
 
         /**
-         * <your documentation>
-         */
+		 * @param lhs the left hand operand
+		 * @param rhs the right hand operand
+		 * @return true if lhs is g rhs, false otherwise
+		 */
         friend bool operator > (const Integer& lhs, const Integer& rhs) {
             return (rhs < lhs);}
 
@@ -197,8 +241,10 @@ class Integer {
         // -----------
 
         /**
-         * <your documentation>
-         */
+		 * @param lhs the left hand operand
+		 * @param rhs the right hand operand
+		 * @return true if lhs is greater than or equal to rhs, false otherwise
+		 */
         friend bool operator >= (const Integer& lhs, const Integer& rhs) {
             return !(lhs < rhs);}
 
@@ -207,8 +253,10 @@ class Integer {
         // ----------
 
         /**
-         * <your documentation>
-         */
+		 * @param lhs the left hand operand
+		 * @param rhs the right hand operand
+		 * @return the sum of lhs and rhs
+		 */
         friend Integer operator + (Integer lhs, const Integer& rhs) {
             return lhs += rhs;}
 
@@ -217,8 +265,10 @@ class Integer {
         // ----------
 
         /**
-         * <your documentation>
-         */
+		 * @param lhs the left hand operand
+		 * @param rhs the right hand operand
+		 * @return the difference of lhs and rhs
+		 */
         friend Integer operator - (Integer lhs, const Integer& rhs) {
             return lhs -= rhs;}
 
@@ -227,8 +277,10 @@ class Integer {
         // ----------
 
         /**
-         * <your documentation>
-         */
+		 * @param lhs the left hand operand
+		 * @param rhs the right hand operand
+		 * @return the product of lhs and rhs
+		 */
         friend Integer operator * (Integer lhs, const Integer& rhs) {
             return lhs *= rhs;}
 
@@ -237,8 +289,10 @@ class Integer {
         // ----------
 
         /**
-         * <your documentation>
-         * @throws invalid_argument if (rhs == 0)
+		 * @param lhs the left hand operand
+		 * @param rhs the right hand operand
+		 * @return the quotient of lhs and rhs
+		 * @throws invalid_argument if (rhs == 0)
          */
         friend Integer operator / (Integer lhs, const Integer& rhs) {
             return lhs /= rhs;}
@@ -248,8 +302,10 @@ class Integer {
         // ----------
 
         /**
-         * <your documentation>
-         * @throws invalid_argument if (rhs <= 0)
+		 * @param lhs the left hand operand
+		 * @param rhs the right hand operand
+		 * @return the remainder of lhs / rhs
+		 * @throws invalid_argument if (rhs <= 0)
          */
         friend Integer operator % (Integer lhs, const Integer& rhs) {
             return lhs %= rhs;}
@@ -259,8 +315,10 @@ class Integer {
         // -----------
 
         /**
-         * <your documentation>
-         */
+		 * @param lhs the left hand operand
+		 * @param rhs the right hand operand
+		 * @return lhs left-shifted by rhs digits
+		 */
         friend Integer operator << (Integer lhs, int rhs) {
             return lhs <<= rhs;}
 
@@ -269,8 +327,10 @@ class Integer {
         // -----------
 
         /**
-         * <your documentation>
-         */
+		 * @param lhs the left hand operand
+		 * @param rhs the right hand operand
+		 * @return lhs right-shifted by rhs digits
+		 */
         friend Integer operator >> (Integer lhs, int rhs) {
             return lhs >>= rhs;}
 
@@ -279,23 +339,36 @@ class Integer {
         // -----------
 
         /**
-         * <your documentation>
-         */
+		 * @param lhs the output stream to use
+		 * @param rhs the Integer to output
+		 * @return lhs
+		 */
         friend std::ostream& operator << (std::ostream& lhs, const Integer& rhs) {
-            // <your code>
-            return lhs << "0";}
+			if (!rhs.polarity)
+				lhs << "-";
+			
+            unsigned int i = rhs.digits.size();
+			do {
+				i--;
+				lhs << (int)rhs.digits[i];
+			} while (i != 0);
+            return lhs;
+		}
 
         /**
          * absolute value
-         * <your documentation>
-         */
+		 * @param x an Integer
+		 * @return the absolute value of x (without modifying x)
+		 */
         friend Integer abs (Integer x) {
             return x.abs();}
 
         /**
          * power
-         * <your documentation>
-         * @throws invalid_argument if (x == 0) && (e == 0)
+		 * @param x the Integer
+		 * @param e the power to exponentiate to
+		 * @return x^e
+		 * @throws invalid_argument if (x == 0) && (e == 0)
          * @throws invalid_argument if (e < 0)
          */
         friend Integer pow (Integer x, int e) {
@@ -337,7 +410,6 @@ class Integer {
          * @param value the value to assign to the Integer
          */
         Integer (int value) {
-            int mod = 10;
 			if( value < 0 ) {
 				polarity = false;
 				value = -value;
@@ -345,17 +417,29 @@ class Integer {
 				polarity = true;
 				
 			while( value != 0 ) {
-				digits.push_back( value % mod );
+// 				std::cout << value << ",  " << value % 10 << ",  " << value / 10  << std::endl;
+				digits.push_back( value % 10 );
 				value /= 10;
 			}
+// 			for( unsigned int i = digits.size()-1; i >= 0; i-- )
+// 				std::cout << digits[i];
+//  			std::cout << digits.size() << std::endl;
 			assert(valid());}
 
+        /**
+		 * @param x Integer to copy
+		 */
+		Integer (const Integer& x) {
+			digits = x.digits;
+			polarity = x.polarity;
+			assert(valid());
+		}
+			
         /**
 		 * @param value the value to assign to the Integer
 		 * @throws invalid_argument if value is not a valid representation of an Integer
          */
         explicit Integer (const std::string& value) {
-			std::cout << "Before IF \n";
 			std::string v = value;
             if( v[0] == '-' ) {
 				polarity = false;
@@ -387,8 +471,10 @@ class Integer {
          * <your documentation>
          */
         Integer operator - () const {
-            // <your code>
-            return Integer(0);}
+            Integer i = *this;
+			i.polarity = !i.polarity;
+            return i;
+		}
 
         // -----------
         // operator ++
@@ -433,10 +519,52 @@ class Integer {
         // -----------
 
         /**
-         * <your documentation>
+         * @param rhs An integer to add to the current Integer
+		 * @return This Integer after rhs has been added to it
          */
         Integer& operator += (const Integer& rhs) {
-            // <your code>
+			
+			T carry = 0, sum;
+			unsigned int d_size, i = 0;
+						
+			if( rhs.polarity != polarity)
+				return *this -= -rhs;
+			
+            if (rhs.digits.size() < digits.size())
+				d_size = rhs.digits.size();
+			else
+				d_size = digits.size();
+			
+			do {
+			    sum = rhs.digits[i] + digits[i] + carry;
+				digits[i] = sum % 10;
+				carry = sum / 10;
+			} while (++i < d_size);
+				
+			if( d_size == digits.size() ) { // lhs is smaller than rhs
+				while( d_size < rhs.digits.size() ) {
+					sum = rhs.digits[d_size] + carry;
+					digits.push_back(sum % 10);
+					carry = sum / 10;
+					d_size++;
+				}
+				
+				if (carry > 0)
+					digits.push_back(carry);
+			} 
+			else { // rhs is smaller than lhs
+				while( carry != 0 && d_size < digits.size() ) {
+					sum = digits[d_size] + carry;
+					digits[d_size] = sum % 10;
+					carry = sum / 10;
+					d_size++;
+				}
+				
+				if (carry > 0)
+					digits.push_back(carry);
+			}	
+				
+				
             return *this;}
 
         // -----------
@@ -447,8 +575,44 @@ class Integer {
          * <your documentation>
          */
         Integer& operator -= (const Integer& rhs) {
-            // <your code>
-            return *this;}
+			
+			bool borrow = 0;
+			T diff;
+			unsigned int d_size, i = 0;
+						
+			if( rhs.polarity != polarity)
+				return *this += -rhs;
+			
+			if( (polarity && rhs > *this) || (!polarity && rhs < *this) ) {
+				*this = rhs - *this;
+				polarity = !polarity;
+				return *this;
+			}
+			
+			if (rhs.digits.size() < digits.size())
+				d_size = rhs.digits.size();
+			else
+				d_size = digits.size();
+			
+			do {
+				diff = digits[i] - rhs.digits[i] - borrow;
+				if( diff < 0 ) {
+					borrow = true;
+					diff += 10;
+				}
+				else
+					borrow = false;
+				digits[i] = diff;
+			} while (++i < d_size);
+				
+			while( borrow && d_size < digits.size() ) {
+				diff = digits[d_size] - borrow;
+				digits[d_size] = diff % 10;
+				borrow = diff / 10;
+				d_size++;
+			}
+			
+			return *this;}
 
         // -----------
         // operator *=
@@ -516,7 +680,7 @@ class Integer {
          * <your documentation>
          */
         Integer& abs () {
-            // <your code>
+            polarity = true;
             return *this;}
 
         // ---
