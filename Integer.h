@@ -293,27 +293,26 @@ class Integer {
 			if( !lhs.polarity && !rhs.polarity )
 				return -lhs > -rhs;
 			
-			if (!lhs.polarity && rhs.polarity)
+			if( !lhs.polarity && rhs.polarity )
 				return true;
-			if (lhs.polarity && !rhs.polarity)
-				return false;		
+			if( lhs.polarity && !rhs.polarity )
+				return false;
 			
-			if (lhs.digits.size() < rhs.digits.size()) 
+			if( lhs.digits.size() < rhs.digits.size() )
 				return true;
-			if (lhs.digits.size() > rhs.digits.size()) 
-				return false;	
-				
+			if( lhs.digits.size() > rhs.digits.size() )
+				return false;
 			
-			for (unsigned int i = lhs.digits.size()-1; i >= 0; i--) {
-				if(lhs.digits[i] > rhs.digits[i])
+			typename C::const_reverse_iterator lhs_it, rhs_it;
+			for (lhs_it = lhs.digits.rbegin(), rhs_it = rhs.digits.rbegin(); lhs_it != lhs.digits.rend() && rhs_it != rhs.digits.rend(); lhs_it++, rhs_it++ ) {
+				if( *lhs_it > *rhs_it )
 					return false;
 				
-				if(lhs.digits[i] < rhs.digits[i])
+				if( *lhs_it < *rhs_it )
 					return true;
 			}
 			
 			return false;
-			
         }
 
         // -----------
@@ -451,11 +450,9 @@ class Integer {
 			if (!rhs.polarity)
 				lhs << "-";
 			
-            unsigned int i = rhs.digits.size();
-			do {
-				i--;
-				lhs << (int)rhs.digits[i];
-			} while (i != 0);
+            typename C::const_reverse_iterator it = rhs.digits.rbegin();
+			while( it != rhs.digits.rend() )
+				lhs << *it++;
             return lhs;
 		}
 
@@ -629,44 +626,52 @@ class Integer {
         Integer& operator += (const Integer& rhs) {
 			
 			T carry = 0, sum;
-			unsigned int d_size, i = 0;
+			typename C::iterator lhs_it = digits.begin();
+			typename C::const_iterator rhs_it = rhs.digits.begin();
 						
 			if( rhs.polarity != polarity)
 				return *this -= -rhs;
 			
-            if (rhs.digits.size() < digits.size())
-				d_size = rhs.digits.size();
-			else
-				d_size = digits.size();
-			
-			do {
-			    sum = rhs.digits[i] + digits[i] + carry;
-				digits[i] = sum % 10;
-				carry = sum / 10;
-			} while (++i < d_size);
-				
-			if( d_size == digits.size() ) { // lhs is smaller than rhs
-				while( d_size < rhs.digits.size() ) {
-					sum = rhs.digits[d_size] + carry;
+			// lhs is smaller than rhs
+            if( rhs.digits.size() > digits.size() ) {
+				while( lhs_it != digits.end() ) {
+					sum = *lhs_it + *rhs_it + carry;
+					*lhs_it = sum % 10;
+					carry = sum / 10;
+					lhs_it++;
+					rhs_it++;
+				}
+
+				while( rhs_it != rhs.digits.end() ) {
+					sum = *rhs_it + carry;
 					digits.push_back(sum % 10);
 					carry = sum / 10;
-					d_size++;
+					rhs_it++;
 				}
 				
 				if (carry > 0)
 					digits.push_back(carry);
-			} 
-			else { // rhs is smaller than lhs
-				while( carry != 0 && d_size < digits.size() ) {
-					sum = digits[d_size] + carry;
-					digits[d_size] = sum % 10;
+			}
+			// rhs is smaller than lhs
+			else {
+				while( rhs_it != rhs.digits.end() ) {
+					sum = *lhs_it + *rhs_it + carry;
+					*lhs_it = sum % 10;
 					carry = sum / 10;
-					d_size++;
+					lhs_it++;
+					rhs_it++;
+				}
+
+				while( carry != 0 && lhs_it != digits.end() ) {
+					sum = *lhs_it + carry;
+					*lhs_it = sum % 10;
+					carry = sum / 10;
+					lhs_it++;
 				}
 				
 				if (carry > 0)
 					digits.push_back(carry);
-			}	
+			}
 				
 				
             return *this;}
@@ -683,7 +688,9 @@ class Integer {
 			
 			bool borrow = 0;
 			T diff;
-			unsigned int d_size, i = 0;
+			typename C::iterator lhs_it = digits.begin();
+			typename C::const_iterator rhs_it = rhs.digits.begin();
+			
 						
 			if( rhs.polarity != polarity)
 				return *this += -rhs;
@@ -694,27 +701,23 @@ class Integer {
 				return *this;
 			}
 			
-			if (rhs.digits.size() < digits.size())
-				d_size = rhs.digits.size();
-			else
-				d_size = digits.size();
-			
-			do {
-				diff = digits[i] - rhs.digits[i] - borrow;
+			while( rhs_it != rhs.digits.end() ) {
+				diff = *lhs_it - *rhs_it - borrow;
 				if( diff < 0 ) {
 					borrow = true;
 					diff += 10;
-				}
-				else
+				} else
 					borrow = false;
-				digits[i] = diff;
-			} while (++i < d_size);
+				*lhs_it = diff;
+				lhs_it++;
+				rhs_it++;
+			}
 				
-			while( borrow && d_size < digits.size() ) {
-				diff = digits[d_size] - borrow;
-				digits[d_size] = diff % 10;
+			while( borrow && lhs_it != digits.end() ) {
+				diff = *lhs_it - borrow;
+				*lhs_it = diff % 10;
 				borrow = diff / 10;
-				d_size++;
+				lhs_it++;
 			}
 			
 			return *this;}
@@ -766,10 +769,11 @@ class Integer {
 		 * @return This integer, which contains the digit-shifted Integer
          */
         Integer& operator <<= (int n) {
-            for (int i = 0; i < n; i++) {
-				digits.erase(0);
+            for (int i = 0; i < n; i++){
+				digits.insert( digits.begin() ,0 );
 			}
-            return *this;}
+            return *this;
+        }
 
         // ------------
         // operator >>=
@@ -780,10 +784,11 @@ class Integer {
 		 * @return This integer, which contains the digit-shifted Integer
          */
         Integer& operator >>= (int n) {
-            for (int i = 0; i < n; i++){
-				digits.insert(0,0);
+            for (int i = 0; i < n; i++) {
+				digits.erase(0);
 			}
-            return *this;}
+            return *this;
+        }
 
         // ---
         // abs
