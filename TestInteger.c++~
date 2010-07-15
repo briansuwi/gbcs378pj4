@@ -19,6 +19,7 @@ To test the program:
 #include <sstream>   // ostringstream
 #include <stdexcept> // invalid_argument
 #include <string>    // ==
+#include <vector>
 
 #include "cppunit/extensions/HelperMacros.h" // CPPUNIT_TEST, CPPUNIT_TEST_SUITE, CPPUNIT_TEST_SUITE_END
 #include "cppunit/TestFixture.h"             // TestFixture
@@ -37,12 +38,13 @@ struct TestInteger : CppUnit::TestFixture {
     // -----------------
 
     void test_shift_left_digits () {
-        const int a[] = {2, 3, 4};
-        const int b[] = {2, 3, 4, 0, 0};
-              int x[10];
-        const int* p = shift_left_digits(a, a + 3, 2, x);
-        CPPUNIT_ASSERT((p - x) == 5);
-        CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, b));}
+         const int a[] = {2, 3, 4};
+         const int b[] = {2, 3, 4, 0, 0};
+               int x[10];
+         const int* p = shift_left_digits(a, a + 3, 2, x);
+
+ 		CPPUNIT_ASSERT((p - x) == 5);
+         CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, b));}
 
     // ------------------
     // shift_right_digits
@@ -66,6 +68,7 @@ struct TestInteger : CppUnit::TestFixture {
         const int c[] = {8, 0, 1};
               int x[10];
         const int* p = plus_digits(a, a + 3, b, b + 3, x);
+
         CPPUNIT_ASSERT(p - x == 3);
         CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, c));}
 
@@ -79,7 +82,7 @@ struct TestInteger : CppUnit::TestFixture {
         const int c[] = {2, 3, 4};
               int x[10];
         const int* p = minus_digits(a, a + 3, b, b + 3, x);
-        CPPUNIT_ASSERT(p - x == 3);
+		CPPUNIT_ASSERT(p - x == 3);
         CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, c));}
 
     // -----------------
@@ -90,8 +93,9 @@ struct TestInteger : CppUnit::TestFixture {
         const int a[] = {2, 3, 4};
         const int b[] = {5, 6, 7};
         const int c[] = {1, 3, 2, 6, 7, 8};
-              int x[10];
-        const int* p = multiplies_digits(a, a + 3, b, b + 3, x);
+              int x[10] = {0,0,0,0,0,0,0,0,0,0};
+		CPPUNIT_ASSERT( x[0]==0 );
+		const int* p = multiplies_digits(a, a + 3, b, b + 3, x);
         CPPUNIT_ASSERT(p - x == 6);
         CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, c));}
 
@@ -103,8 +107,8 @@ struct TestInteger : CppUnit::TestFixture {
         const int a[] = {1, 3, 2, 6, 7, 8};
         const int b[] = {5, 6, 7};
         const int c[] = {2, 3, 4};
-              int x[10];
-        const int* p = divides_digits(a, a + 6, b, b + 3, x);
+			int x[10] = {0,0,0,0,0,0,0,0,0,0};
+		const int* p = divides_digits(a, a + 6, b, b + 3, x);
         CPPUNIT_ASSERT(p - x == 3);
         CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, c));}
 
@@ -224,16 +228,6 @@ struct TestInteger : CppUnit::TestFixture {
     // ---
     // +=
     // ---
-
-	void test_plus_equal_1 () {
-		try {
-			Integer<int>       x = 98765;
-			Integer<int>      y = 1;
-			x += y;
-			CPPUNIT_ASSERT( x == 98766);}
-		catch (std::invalid_argument& e) {
-			CPPUNIT_ASSERT(false);}
-	}
 	
 	void test_plus_equal_1 () {
 		try {
