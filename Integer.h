@@ -42,7 +42,8 @@ OI shift_left_digits (II b, II e, int n, OI x) {
 		*x = 0;
 		x++;
 	}
-    return x;}
+    return x;
+}
 
 // ------------------
 // shift_right_digits
@@ -651,9 +652,8 @@ class Integer {
 				
 				if (carry > 0)
 					digits.push_back(carry);
-			}
+			} else {
 			// rhs is smaller than lhs
-			else {
 				while( rhs_it != rhs.digits.end() ) {
 					sum = *lhs_it + *rhs_it + carry;
 					*lhs_it = sum % 10;
@@ -674,7 +674,8 @@ class Integer {
 			}
 				
 				
-            return *this;}
+            return *this;
+        }
 
         // -----------
         // operator -=
@@ -731,8 +732,49 @@ class Integer {
 		 * @return This integer, which contains the product with rhs
          */
         Integer& operator *= (const Integer& rhs) {
-            // <your code>
-            return *this;}
+			typename C::const_iterator lhs_it, rhs_it = rhs.digits.begin();
+			C product;
+			typename C::iterator p_it;
+			int pad = 0, carry = 0;
+	
+			// do the multiplication
+			while( rhs_it != rhs.digits.end() ) {
+				p_it = product.begin() + pad++;
+				
+				for( lhs_it = digits.begin(); lhs_it != digits.end(); lhs_it++ ) {
+					if( p_it == product.end() ) {
+						product.push_back(0);
+						p_it = product.end()-1;
+					}
+					*p_it += *rhs_it * *lhs_it;
+					p_it++;
+				}
+				rhs_it++;
+			}
+	
+			// calculate the carries
+			for( p_it = product.begin(); p_it != product.end(); p_it++ ) {
+				*p_it += carry;
+				carry = *p_it / 10;
+				*p_it %= 10;
+			}
+	
+			while( carry != 0 ) {
+				if( p_it == product.end() ) {
+					product.push_back(0);
+					p_it = product.end()-1;
+				}
+				*p_it += carry;
+				carry = *p_it / 10;
+				*p_it %= 10;
+				p_it++;
+			}
+	
+			digits = product;
+			polarity = (polarity == rhs.polarity);
+		
+			return *this;
+		}
 
         // -----------
         // operator /=

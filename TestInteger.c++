@@ -353,6 +353,16 @@ struct TestInteger : CppUnit::TestFixture {
 				CPPUNIT_ASSERT(false);}
 	}
 
+	void test_times_equal_1 () {
+		try {
+			Integer<int>       x = 12345;
+			Integer<int>      y = 6789;
+			std::cout << "PRODUCT: " << (y *= x) << std::endl;
+			CPPUNIT_ASSERT( y == 83810205);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
+
     // -----
     // suite
     // -----
@@ -385,6 +395,7 @@ struct TestInteger : CppUnit::TestFixture {
 	CPPUNIT_TEST(test_minus_equal_4);
 	CPPUNIT_TEST(test_minus_equal_5);
 	CPPUNIT_TEST(test_minus_equal_6);
+	CPPUNIT_TEST(test_times_equal_1);
 	CPPUNIT_TEST_SUITE_END();};
 
 // ----
