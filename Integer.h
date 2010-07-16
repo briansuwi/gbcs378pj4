@@ -751,7 +751,7 @@ class Integer {
 				}
 				rhs_it++;
 			}
-	
+			
 			// calculate the carries
 			for( p_it = product.begin(); p_it != product.end(); p_it++ ) {
 				*p_it += carry;
@@ -760,10 +760,8 @@ class Integer {
 			}
 	
 			while( carry != 0 ) {
-				if( p_it == product.end() ) {
-					product.push_back(0);
-					p_it = product.end()-1;
-				}
+				product.push_back(0);
+				p_it = product.end()-1;
 				*p_it += carry;
 				carry = *p_it / 10;
 				*p_it %= 10;
@@ -799,7 +797,7 @@ class Integer {
          * @throws invalid_argument if (rhs <= 0)
          */
         Integer& operator %= (const Integer& rhs) {
-            // <your code>
+            Integer remainder = *this - (*this / rhs);
             return *this;}
 
         // ------------
@@ -855,7 +853,21 @@ class Integer {
          * @throws invalid_argument if (e < 0)
          */
         Integer& pow (int e) {
-            // <your code>
-            return *this;}};
+			if( e < 0 )
+				throw std::invalid_argument("Integer::pow()");
+			else if( e == 0 ) {
+				if( *this == 0 )
+					throw std::invalid_argument("Integer::pow()");
+
+				return *this = 1;
+			}
+			Integer mult = *this;
+			while( e > 1 ) {
+				*this *= mult;
+				--e;
+			}
+			return *this;
+		}
+};
 
 #endif // Integer_h

@@ -58,10 +58,6 @@ list:
 
 run:
 	make RunInteger.c++x
-	make RunInteger.javax
-	make RunInteger.pyx
 
 test:
 	make TestInteger.c++x
-	make TestInteger.javax
-	make TestInteger.pyx

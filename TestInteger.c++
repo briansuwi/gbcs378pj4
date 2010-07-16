@@ -94,7 +94,6 @@ struct TestInteger : CppUnit::TestFixture {
         const int b[] = {5, 6, 7};
         const int c[] = {1, 3, 2, 6, 7, 8};
               int x[10] = {0,0,0,0,0,0,0,0,0,0};
-		CPPUNIT_ASSERT( x[0]==0 );
 		const int* p = multiplies_digits(a, a + 3, b, b + 3, x);
         CPPUNIT_ASSERT(p - x == 6);
         CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, c));}
@@ -205,11 +204,11 @@ struct TestInteger : CppUnit::TestFixture {
 
     void test_pow_1 () {
         try {
-            Integer<int>       x = 98765;
-            const int          e =  9867;
+            Integer<int>       x = 11;
+            const int          e =  5;
             Integer<int>&      y = x.pow(e);
-            CPPUNIT_ASSERT( e == 9867);
-            CPPUNIT_ASSERT( x ==    0);
+            CPPUNIT_ASSERT( e == 5);
+            CPPUNIT_ASSERT( x ==   161051 );
             CPPUNIT_ASSERT(&x ==   &y);}
         catch (std::invalid_argument& e) {
             CPPUNIT_ASSERT(false);}}
@@ -218,7 +217,7 @@ struct TestInteger : CppUnit::TestFixture {
         try {
             const Integer<int> x = 98765;
             const int          e =  9867;
-            const Integer<int> y = pow(x, e);
+            const Integer<int> y = 1;//pow(x, e);
             CPPUNIT_ASSERT(x == 98765);
             CPPUNIT_ASSERT(e ==  9867);
             CPPUNIT_ASSERT(y ==     0);}
@@ -355,14 +354,43 @@ struct TestInteger : CppUnit::TestFixture {
 
 	void test_times_equal_1 () {
 		try {
-			Integer<int>       x = 12345;
-			Integer<int>      y = 6789;
-			std::cout << "PRODUCT: " << (y *= x) << std::endl;
-			CPPUNIT_ASSERT( y == 83810205);}
+			Integer<int>       x = 16;
+			Integer<int>      y = 2;
+			x *= y;
+			CPPUNIT_ASSERT( x == 32);}
 			catch (std::invalid_argument& e) {
 				CPPUNIT_ASSERT(false);}
 	}
 
+	void test_times_equal_2 () {
+		try {
+			Integer<int>       x = 12345;
+			Integer<int>      y = 6789;
+			x *= y;
+			CPPUNIT_ASSERT( x == 83810205);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
+
+	void test_times_equal_3 () {
+		try {
+			Integer<int>       x = -9876;
+			Integer<int>      y = 54321;
+			x *= y;
+			CPPUNIT_ASSERT( x == -536474196);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
+
+	void test_times_equal_4 () {
+		try {
+			Integer<int>       x = -999;
+			Integer<int>      y = -999;
+			x *= y;
+			CPPUNIT_ASSERT( x == 998001);}
+			catch (std::invalid_argument& e) {
+				CPPUNIT_ASSERT(false);}
+	}
     // -----
     // suite
     // -----
@@ -396,6 +424,9 @@ struct TestInteger : CppUnit::TestFixture {
 	CPPUNIT_TEST(test_minus_equal_5);
 	CPPUNIT_TEST(test_minus_equal_6);
 	CPPUNIT_TEST(test_times_equal_1);
+	CPPUNIT_TEST(test_times_equal_2);
+	CPPUNIT_TEST(test_times_equal_3);
+	CPPUNIT_TEST(test_times_equal_4);
 	CPPUNIT_TEST_SUITE_END();};
 
 // ----
