@@ -28,6 +28,7 @@ To document the program:
 
 #include <iostream> // cout, endl, ios_base
 #include <deque>    // deque
+#include <cassert>
 
 #include "Integer.h"
 
@@ -46,11 +47,13 @@ int main () {
     {
     const Integer<int> n = Integer<int>(2).pow(4423) - 1;
     cout << "2^4423 - 1 = " << n << endl << endl;
+    assert( n.numDigits() == 1332 );
     }
 
     {
     const Integer< int, std::deque<int> > n = Integer< int, std::deque<int> >(2).pow(4423) - 1;
     cout << "2^4423 - 1 = " << n << endl << endl;
+    assert( n.numDigits() == 1332 );
     }
 
     // ---------------------
@@ -64,6 +67,7 @@ int main () {
     {
     const Integer<int> n = Integer<int>(2).pow(132049) - 1;
     cout << "2^132049 - 1 = " << n << endl << endl;
+    assert( n.numDigits() == 39751 );
     }
 
     cout << "Done." << endl; 

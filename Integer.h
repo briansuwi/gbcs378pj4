@@ -848,7 +848,8 @@ class Integer {
 
         /**
          * power
-         * <your documentation>
+         * @param e the exponent
+         * @return this to the power e (modifying this)
          * @throws invalid_argument if (this == 0) && (e == 0)
          * @throws invalid_argument if (e < 0)
          */
@@ -875,6 +876,18 @@ class Integer {
 
 			return *this;
 		}
+
+        // ---
+        // numDigits
+        // ---
+
+        /**
+         * numDigits
+         * @return the number of digits the integer contains
+         */
+        int numDigits () const {
+        	return digits.size();
+        }
 };
 
 #endif // Integer_h
