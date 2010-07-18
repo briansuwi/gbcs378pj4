@@ -215,12 +215,12 @@ struct TestInteger : CppUnit::TestFixture {
 
     void test_pow_2 () {
         try {
-            const Integer<int> x = 98765;
-            const int          e =  9867;
-            const Integer<int> y = 1;//pow(x, e);
-            CPPUNIT_ASSERT(x == 98765);
-            CPPUNIT_ASSERT(e ==  9867);
-            CPPUNIT_ASSERT(y ==     0);}
+            const Integer<int> x = 2;
+            const int          e =  20;
+            const Integer<int> y = pow(x, e);
+            CPPUNIT_ASSERT(x == 2);
+            CPPUNIT_ASSERT(e == 20);
+            CPPUNIT_ASSERT(y == 1048576);}
         catch (std::invalid_argument& e) {
             CPPUNIT_ASSERT(false);}}
 			

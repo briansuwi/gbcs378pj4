@@ -861,11 +861,18 @@ class Integer {
 
 				return *this = 1;
 			}
-			Integer mult = *this;
-			while( e > 1 ) {
-				*this *= mult;
-				--e;
-			}
+			if( *this == 0 )
+				return *this;
+			
+			if( e == 1 )
+				return *this;
+			
+			Integer mult = *this * *this;
+			if( e % 2 == 0 )     // e is even
+				*this = mult.pow( e/2 );
+			else                 // e is odd
+				*this = *this * mult.pow( e/2 );
+
 			return *this;
 		}
 };
