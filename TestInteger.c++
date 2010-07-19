@@ -102,13 +102,46 @@ struct TestInteger : CppUnit::TestFixture {
     // divides_digits
     // --------------
 
-    void test_divides_digits () {
+    void test_divides_digits_1 () {
+        const int a[] = {1, 3, 2, 6, 7, 8};
+        const int b[] = {5};
+        const int c[] = {2, 6, 5, 3, 5};
+			  int x[10] = {0,0,0,0,0,0,0,0,0,0};
+		const int* p = divides_digits(a, a + 6, b, b + 1, x);
+        CPPUNIT_ASSERT(p - x == 5);
+        CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, c));}
+		
+	    void test_divides_digits_2 () {
         const int a[] = {1, 3, 2, 6, 7, 8};
         const int b[] = {5, 6, 7};
         const int c[] = {2, 3, 4};
 			  int x[10] = {0,0,0,0,0,0,0,0,0,0};
 		const int* p = divides_digits(a, a + 6, b, b + 3, x);
+		std::cout << x[0] << x[1] << x[2] << std::endl;
+		std::cout << "Div 2 Test -> " << p-x << std::endl;
         CPPUNIT_ASSERT(p - x == 3);
+        CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, c));}
+		
+		void test_divides_digits_3 () {
+        const int a[] = {1, 2, 1};
+        const int b[] = {1, 0};
+        const int c[] = {1, 2};
+			  int x[10] = {0,0,0,0,0,0,0,0,0,0};
+		const int* p = divides_digits(a, a + 3, b, b + 2, x);
+		std::cout << x[0] << x[1] << x[2] << std::endl;
+		std::cout << "Div 2 Test -> " << p-x << std::endl;
+        CPPUNIT_ASSERT(p - x == 2);
+        CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, c));}
+
+		void test_divides_digits_4 () {
+        const int a[] = {1, 2, 1, 2, 4};
+        const int b[] = {1, 1, 1, 1};
+        const int c[] = {1, 0};
+			  int x[10] = {0,0,0,0,0,0,0,0,0,0};
+		const int* p = divides_digits(a, a + 5, b, b + 4, x);
+		std::cout << x[0] << x[1] << x[2] << std::endl;
+		std::cout << "Div 2 Test -> " << p-x << std::endl;
+        CPPUNIT_ASSERT(p - x == 2);
         CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, c));}
 
     // -----------
@@ -401,7 +434,10 @@ struct TestInteger : CppUnit::TestFixture {
     CPPUNIT_TEST(test_plus_digits);
     CPPUNIT_TEST(test_minus_digits);
     CPPUNIT_TEST(test_multiplies_digits);
-    CPPUNIT_TEST(test_divides_digits);
+    CPPUNIT_TEST(test_divides_digits_1);
+	CPPUNIT_TEST(test_divides_digits_2);
+	CPPUNIT_TEST(test_divides_digits_3);
+	CPPUNIT_TEST(test_divides_digits_4);
     CPPUNIT_TEST(test_constructor_1);
     CPPUNIT_TEST(test_constructor_2);
     CPPUNIT_TEST(test_constructor_3);

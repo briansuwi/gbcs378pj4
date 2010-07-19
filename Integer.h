@@ -218,6 +218,113 @@ OI multiplies_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
 	return x_end;
 }
 
+template <typename II1, typename OI>
+OI multiplies_digits_2 (II1 b1, II1 e1, int n, OI x) {
+	OI x_begin = x;
+	int pad = 0, carry = 0;
+	
+	// do the multiplication
+	while (e1 != b1) {
+//	std::cout << "MULT 1" << std::endl;
+		pad = (*(e1-1)) * n + carry;
+		*x = pad % 10;
+		carry = pad / 10;
+		x++;
+		e1--;
+	}
+	
+	if (carry > 0) {
+		*x = carry;
+		x++;
+	}
+	
+//	std::cout << "MULT 2" << std::endl;	
+	OI x_end = x;
+	// reverse the array
+	for( OI x_temp = x_begin; x_temp < x - 1; x_temp++, x-- )
+		std::swap( *x_temp, *(x - 1) );
+  //  	std::cout << "MULT 3" << std::endl;
+  /*
+   	std::cout << "Mult RESULT MD2 -> ";
+	while (x_begin != x_end){
+		std::cout << *x_begin;
+		x_begin++;
+	}
+	std::cout << std::endl;*/
+  
+	return x_end;
+}
+
+template <typename II1, typename II2>
+int comparison (II1 b1, II1 e1, II2 b2, II2 e2) {
+/*
+	II1 temp1 = b1;
+	II2 temp2 = b2;
+	
+	while (temp1 != e1) {
+		std::cout << *temp1;
+	}
+	std::cout << std::endl;
+	
+	while (temp2 != e2) {
+		std::cout << *temp2;
+	}
+	std::cout << std::endl;
+*/
+ 
+	if (e1 - b1 < e2 - b2) {
+		std::cout << e1 - b1<< std::endl;
+		std::cout << e2 - b2 << std::endl;
+		return 1;
+	} else if (e2 - b2 < e1 - b1) {
+		return 2;
+	} else {
+		while (b1 != e1) {
+			if (*b1 < *b2) {
+				return 1;
+			} else if (*b1 > *b2){
+				return 2;
+			}
+			b1++;
+			b2++;
+		}
+	}
+	return 0;
+}
+
+template <typename II1, typename IP, typename OI>
+OI divides_digits_2 (II1 b1, II1 e1, IP d, OI x) {
+//	std::cout << "E - B -> " << e1-b1 << std::endl;
+//	std::cout << "B =-> " << *b1 << std::endl;
+	OI x_b = x;
+	
+	if (*d == 1) {
+		std::copy(b1, e1, x);
+	//	std::cout << "Copy =-> " << *b1 << std::endl;
+	} else if (*d == 0) {
+		return x;
+	} else {
+		int r = 0, q = 0;
+		
+		while (b1 != e1) {
+			//std::cout << "Divisor -> " << *d << " Dividend -> " << *b1 << std::endl;
+     		q = (*b1 + r) / *d;
+			r = ((*b1 + r) - (q * (*d)))  * 10;
+			if (x_b == x && q == 0) {
+			//	std::cout << "Divides 2 -> " << q << std::endl;
+				b1++;
+			} else {
+				*x = q;
+				x++;
+				b1++;
+			}
+		//	std::cout << "Qoutient -> " << q << " Remainder -> " << r << std::endl;
+		}
+	} 
+				
+    return x;}
+	
+
 // --------------
 // divides_digits
 // --------------
@@ -235,8 +342,344 @@ OI multiplies_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
  */
 template <typename II1, typename II2, typename OI>
 OI divides_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
-    // <your code>
+    if ( (e2 - b2) == 1) {
+		return divides_digits_2(b1, e1, b2, x);
+	} else if ( (e1 - b1) < (e2 - b2) ) {
+		std::copy(b1, e1, x);
+		x += (e1 - b1);
+	} else if ( (e1 - b1) == (e2 - b2)  ){
+		int comp = comparison(b1 , e1, b2, e2);
+		
+		if (comp == 0) {
+			*x = 1;
+			x++;
+		} else if (comp == 1) {
+			std::copy(b1, e1, x);
+			x += (e1 - b1);
+		} else {
+			std::copy(b2, e2, x);
+			x += (e2 - b2);
+		}
+	
+	} else {
+		std::vector<int> rem;
+        std::vector<int> rem_temp;
+		std::vector<int> m_temp(e2-b2+1);
+		int q_length = (e1 - b1) - (e2 - b2);
+		int d2 = (*b2 * 10) + *(b2+1);
+		int di3 = 0;
+		int qe = 0;
+		int lge = -1;
+		
+		
+		for (int c = 0; c < (e2 - b2); c ++) {
+			rem.push_back((*(b1 + c)));  
+			rem_temp.push_back(*(b1 + c));
+		}
+	/*	std::vector<int>::iterator it = rem_temp.begin();
+		
+		while (it != rem_temp.end()){
+			std::cout << *it;
+			it++;
+		}
+		std::cout << std::endl;*/
+		
+		for (int i = 0; i < q_length+1; i++) {
+			
+			if ( e2-b2 > 2) {
+				di3 = rem[0]*100 + rem[1]*10 + rem[2];
+			} else {
+				di3 = rem[0]*100 + rem[1]*10;
+			}
+			qe = di3/d2;
+			if (qe > 9) {
+				qe = 9;
+			} //rem_temp.end();
+			std::vector<int>::iterator rt_end = multiplies_digits_2(b2, e2, qe, rem_temp.begin());
+			//std::cout << "Mult"  << std::endl;   
+			lge = comparison(rem_temp.begin(), rt_end, rem.begin(), rem.end());
+			//std::cout << "Comp " << std::endl;
+
+			if (lge == 0) {
+				*x = qe;
+				x++;
+				rem.clear();
+				rem.push_back(*(b1+q_length+i));
+				m_temp.clear();
+			} else if (lge == 1) {
+				while (lge == 1 && qe < 10) {
+					qe++;
+					std::vector<int>::iterator rt_end = multiplies_digits_2(b2, e2, qe, rem_temp.begin());
+					lge = comparison(rem_temp.begin(), rt_end, rem.begin(), rem.end());
+				}			
+				if (qe != 0) {
+					*x = qe - 1;
+					x++;
+				} else {
+					rem.push_back(0);
+				}
+				
+				//*x = qe - 1;
+				std::vector<int>::iterator rt_end = multiplies_digits_2(b2, e2, qe-1, rem_temp.begin());
+				
+				std::vector<int>::iterator m_e = minus_digits(rem.begin(), rem.end(), rem_temp.begin(), rt_end, m_temp.begin());
+				std::vector<int>::iterator m_b = m_temp.begin();
+				rem.clear();
+				bool flag = true;
+				while (m_b != m_e) {
+					if (*m_b == 0 && flag){
+						m_b++;
+					} else if (*m_b != 0) {
+						flag = true;
+						rem.push_back(*m_b);
+						m_b++;
+					} else {
+						rem.push_back(*m_b);
+						m_b++;
+					}
+				}
+				rem.push_back(*(b1+q_length+i));
+				m_temp.clear();
+
+			} else if (lge == 2) {
+				while (lge == 2 && qe != 0) {
+					qe--;
+					std::vector<int>::iterator rt_end = multiplies_digits_2(b2, e2, qe, rem_temp.begin());
+					lge = comparison(rem_temp.begin(), rt_end, rem.begin(), rem.end());
+				}
+				if (qe != 0) {
+					*x = qe;
+					x++;
+					std::vector<int>::iterator m_e = minus_digits(rem.begin(), rem.end(), rem_temp.begin(), rt_end, m_temp.begin());
+					std::vector<int>::iterator m_b = m_temp.begin();
+					rem.clear();
+					bool flag = true;
+					while (m_b != m_e) {
+						if (*m_b == 0 && flag){
+							m_b++;
+						} else if (*m_b != 0) {
+							flag = true;
+							rem.push_back(*m_b);
+							m_b++;
+						} else {
+							rem.push_back(*m_b);
+							m_b++;
+						}
+					}
+					rem.push_back(*(b1+q_length+i));
+					m_temp.clear();
+				} else {
+					if (i == q_length) {
+						*x = 0;
+						x++;
+					}
+					rem.push_back(*(b1+q_length+i));
+				}
+				
+			}
+		}
+
+		
+	}
+	
     return x;}
+	
+
+template <typename II1, typename IP, typename OI>
+OI modulus_digits_2 (II1 b1, II1 e1, IP d, OI x) {
+//	std::cout << "E - B -> " << e1-b1 << std::endl;
+//	std::cout << "B =-> " << *b1 << std::endl;
+	OI x_b = x;
+	int r = 0, q = 0;	
+	
+	if (*d == 1) {
+		std::copy(b1, e1, x);
+	//	std::cout << "Copy =-> " << *b1 << std::endl;
+	} else if (*d == 0) {
+		return x;
+	} else {
+
+		
+		while (b1 != e1) {
+			//std::cout << "Divisor -> " << *d << " Dividend -> " << *b1 << std::endl;
+     		q = (*b1 + r) / *d;
+			r = ((*b1 + r) - (q * (*d)))  * 10;
+			if (x_b == x && q == 0) {
+			//	std::cout << "Divides 2 -> " << q << std::endl;
+				b1++;
+			} else {
+				*x = q;
+				x++;
+				b1++;
+			}
+		//	std::cout << "Qoutient -> " << q << " Remainder -> " << r << std::endl;
+		}
+	} 
+				
+    return r;}
+	
+
+// --------------
+// divides_digits
+// --------------
+
+/**
+ * @param b  an iterator to the beginning of an input  sequence (inclusive)
+ * @param e  an iterator to the end       of an input  sequence (exclusive)
+ * @param b2 an iterator to the beginning of an input  sequence (inclusive)
+ * @param e2 an iterator to the end       of an input  sequence (exclusive)
+ * @param x  an iterator to the beginning of an output sequence (inclusive)
+ * @return   an iterator to the end       of an output sequence (exclusive)
+ * the sequences are of decimal digits
+ * output the division of the two input sequences into the output sequence
+ * (s1 / s2) => x
+ */
+template <typename II1, typename II2, typename OI>
+OI modulus_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
+	std::vector<int> rem;
+	std::vector<int> rem_temp;
+	std::vector<int> m_temp(e2-b2+1);
+	int q_length = (e1 - b1) - (e2 - b2);
+	int d2 = (*b2 * 10) + *(b2+1);
+	int di3 = 0;
+	int qe = 0;
+	int lge = -1;
+	int comp = comparison(b1 , e1, b2, e2);
+
+
+    if ( (e2 - b2) == 1) {
+		return divides_digits_2(b1, e1, b2, x);
+	} else if ( (e1 - b1) < (e2 - b2) ) {
+		std::copy(b1, e1, x);
+		x += (e1 - b1);
+	} else if ( (e1 - b1) == (e2 - b2)  && comp < 2 ){
+				
+		if (comp == 0) {
+			*x = 1;
+			x++;
+		} else if (comp == 1) {
+			std::copy(b1, e1, x);
+			x += (e1 - b1);
+		} 
+	} else {
+		
+		for (int c = 0; c < (e2 - b2); c ++) {
+			rem.push_back((*(b1 + c)));  
+			rem_temp.push_back(*(b1 + c));
+		}
+	/*	std::vector<int>::iterator it = rem_temp.begin();
+		
+		while (it != rem_temp.end()){
+			std::cout << *it;
+			it++;
+		}
+		std::cout << std::endl;*/
+		
+		for (int i = 0; i < q_length+1; i++) {
+			
+			if ( e2-b2 > 2) {
+				di3 = rem[0]*100 + rem[1]*10 + rem[2];
+			} else {
+				di3 = rem[0]*100 + rem[1]*10;
+			}
+			qe = di3/d2;
+			if (qe > 9) {
+				qe = 9;
+			} //rem_temp.end();
+			std::vector<int>::iterator rt_end = multiplies_digits_2(b2, e2, qe, rem_temp.begin());
+			//std::cout << "Mult"  << std::endl;   
+			lge = comparison(rem_temp.begin(), rt_end, rem.begin(), rem.end());
+			//std::cout << "Comp " << std::endl;
+
+			if (lge == 0) {
+				*x = qe;
+				x++;
+				rem.clear();
+				rem.push_back(*(b1+q_length+i));
+				m_temp.clear();
+			} else if (lge == 1) {
+				while (lge == 1 && qe < 10) {
+					qe++;
+					std::vector<int>::iterator rt_end = multiplies_digits_2(b2, e2, qe, rem_temp.begin());
+					lge = comparison(rem_temp.begin(), rt_end, rem.begin(), rem.end());
+				}			
+				if (qe != 0) {
+					*x = qe - 1;
+					x++;
+				} else {
+					rem.push_back(0);
+				}
+				
+				//*x = qe - 1;
+				std::vector<int>::iterator rt_end = multiplies_digits_2(b2, e2, qe-1, rem_temp.begin());
+
+				std::cout << std::endl;
+				std::vector<int>::iterator m_e = minus_digits(rem.begin(), rem.end(), rem_temp.begin(), rt_end, m_temp.begin());
+				std::vector<int>::iterator m_b = m_temp.begin();
+				rem.clear();
+				bool flag = true;
+				while (m_b != m_e) {
+					if (*m_b == 0 && flag){
+						m_b++;
+					} else if (*m_b != 0) {
+						flag = true;
+						rem.push_back(*m_b);
+						m_b++;
+					} else {
+						rem.push_back(*m_b);
+						m_b++;
+					}
+				}
+				rem.push_back(*(b1+q_length+i));
+				m_temp.clear();
+				//rem = m_temp;
+				
+				
+
+				
+				//x++;
+			} else if (lge == 2) {;
+				while (lge == 2 && qe != 0) {
+					qe--;
+					std::vector<int>::iterator rt_end = multiplies_digits_2(b2, e2, qe, rem_temp.begin());
+					lge = comparison(rem_temp.begin(), rt_end, rem.begin(), rem.end());
+				}
+				if (qe != 0) {
+					*x = qe;
+					x++;
+					std::vector<int>::iterator m_e = minus_digits(rem.begin(), rem.end(), rem_temp.begin(), rt_end, m_temp.begin());
+					std::vector<int>::iterator m_b = m_temp.begin();
+					rem.clear();
+					bool flag = true;
+					while (m_b != m_e) {
+						if (*m_b == 0 && flag){
+							m_b++;
+						} else if (*m_b != 0) {
+							flag = true;
+							rem.push_back(*m_b);
+							m_b++;
+						} else {
+							rem.push_back(*m_b);
+							m_b++;
+						}
+					}
+					rem.push_back(*(b1+q_length+i));
+					m_temp.clear();
+				} else {
+					if (i == q_length) {
+						*x = 0;
+						x++;
+					}
+					rem.push_back(*(b1+q_length+i));
+				}
+				
+			}
+		}
+
+		
+	}
+	
+    return rem;}
 
 // -------
 // Integer
@@ -791,7 +1234,9 @@ class Integer {
          * @throws invalid_argument if (rhs == 0)
          */
         Integer& operator /= (const Integer& rhs) {
-            // <your code>
+			C temp;
+			divides_digits(digits.begin(), digits.end(), rhs.digits.begin(), rhs.digits.end(), temp.begin());
+			digits = temp;
             return *this;}
 
         // -----------
@@ -804,7 +1249,9 @@ class Integer {
          * @throws invalid_argument if (rhs <= 0)
          */
         Integer& operator %= (const Integer& rhs) {
-            Integer remainder = *this - (*this / rhs);
+			C temp;
+			modulus_digits(digits.begin(), digits.end(), rhs.digits.begin(), rhs.digits.end(), temp.begin());
+			digits = temp;
             return *this;}
 
         // ------------
