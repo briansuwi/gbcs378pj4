@@ -716,12 +716,19 @@ class Integer {
 				
 			while( borrow && lhs_it != digits.end() ) {
 				diff = *lhs_it - borrow;
-				*lhs_it = diff % 10;
-				borrow = diff / 10;
+				if( diff < 0 )
+					diff += 10;
+				else 
+					borrow = false;
+				*lhs_it = diff;	
 				lhs_it++;
 			}
 			
-			return *this;}
+			while( digits.back() == 0 )
+				digits.erase( digits.end()-1 );
+			
+			return *this;
+		}
 
         // -----------
         // operator *=

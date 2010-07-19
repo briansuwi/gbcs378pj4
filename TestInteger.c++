@@ -230,10 +230,10 @@ struct TestInteger : CppUnit::TestFixture {
 	
 	void test_plus_equal_1 () {
 		try {
-			Integer<int>       x = 98765;
+			Integer<int>       x = 98769;
 			Integer<int>      y = 1;
 			x += y;
-			CPPUNIT_ASSERT( x == 98766);}
+			CPPUNIT_ASSERT( x == 98770);}
 			catch (std::invalid_argument& e) {
 				CPPUNIT_ASSERT(false);}
 	}
@@ -294,10 +294,10 @@ struct TestInteger : CppUnit::TestFixture {
 
 	void test_minus_equal_1 () {
 		try {
-			Integer<int>       x = 98765;
-			Integer<int>      y = 1;
-			x -= y;
-			CPPUNIT_ASSERT( x == 98764);}
+			Integer<int>       x = 1000;
+			Integer<int>      y = 990;
+			std::cout << "MINUS: " << (x -= y) << std::endl;
+			CPPUNIT_ASSERT( x == 10);}
 			catch (std::invalid_argument& e) {
 				CPPUNIT_ASSERT(false);}
 	}
